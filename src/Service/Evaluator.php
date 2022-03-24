@@ -3,22 +3,23 @@
 namespace Alura\Leilao\Service;
 
 use Alura\Leilao\Model\Auction;
+use Alura\Leilao\Model\Bid;
 
 class Evaluator
 {
-    private float $highestValue = -INF;
-    private float $lowestValue = INF;
+    private float $highestValue;
+    private float $lowestValue;
+    private array $highestBids;
 
     public function evaluate(Auction $auction): void
     {
-        foreach ($auction->getBids() as $bid) {
-            if($bid->getValue() > $this->highestValue) {
-                $this->highestValue = $bid->getValue();
-            }
-            if($bid->getValue() < $this->lowestValue) {
-                $this->lowestValue = $bid->getValue();
-            }
-        }
+        $bids = $auction->getBids();
+        usort($bids, function (Bid $bid1, Bid $bid2) {
+            return $bid2->getValue() - $bid1->getValue();
+        });
+        $this->highestValue = $bids[0]->getValue();
+        $this->lowestValue = $bids[count($bids) - 1]->getValue();
+        $this->highestBids = array_slice($bids, 0, 3);
     }
 
     public function getHighestValue(): float
@@ -29,5 +30,13 @@ class Evaluator
     public function getLowestValue(): float
     {
         return $this->lowestValue;
+    }
+
+    /**
+     * @return Bid[]
+     */
+    public function getHighestBids(): array
+    {
+        return $this->highestBids;
     }
 }

@@ -84,4 +84,28 @@ class EvaluatorTest extends TestCase
 
         self::assertEquals(2000, $lowestValue);
     }
+
+    public function testEvaluatorShouldFindTheThreeHighestValues()
+    {
+        $auction = new Auction('Fiat 147 0Km');
+
+        $joao = new User('João');
+        $maria = new User('Maria');
+        $rogerio = new User('Rogerio');
+        $vanessa = new User('Vanessa');
+
+        $auction->receiveBid(new Bid($rogerio, 1500));
+        $auction->receiveBid(new Bid($maria, 1300));
+        $auction->receiveBid(new Bid($vanessa, 2000));
+        $auction->receiveBid(new Bid($joao, 1900));
+
+        $auctioneer = new Evaluator();
+        $auctioneer->evaluate($auction);
+        $highestBids = $auctioneer->getHighestBids();
+
+        self::assertCount(3, $highestBids);
+        self::assertEquals(2000, $highestBids[0]->getValue());
+        self::assertEquals(1900, $highestBids[1]->getValue());
+        self::assertEquals(1500, $highestBids[2]->getValue());
+    }
 }

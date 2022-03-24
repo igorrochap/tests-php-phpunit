@@ -14,9 +14,9 @@ class Auction
         $this->bids = [];
     }
 
-    public function receiveBid(Bid $lance): void
+    public function receiveBid(Bid $bid): void
     {
-        $this->bids[] = $lance;
+        $this->bids[] = $bid;
     }
 
     public function getBids(): array
