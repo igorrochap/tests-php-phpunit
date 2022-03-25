@@ -10,6 +10,13 @@ use PHPUnit\Framework\TestCase;
 
 class EvaluatorTest extends TestCase
 {
+    private Evaluator $auctioneer;
+
+    protected function setUp(): void
+    {
+        $this->auctioneer = new Evaluator();
+    }
+
     /**
      * @dataProvider ascendingOrderAuction
      * @dataProvider descendingOrderAuction
@@ -17,11 +24,9 @@ class EvaluatorTest extends TestCase
      */
     public function testEvaluatorShouldFindTheHighestValueOfBids(Auction $auction)
     {
-        $auctioneer = new Evaluator();
-
         //act - when
-        $auctioneer->evaluate($auction);
-        $highestValue = $auctioneer->getHighestValue();
+        $this->auctioneer->evaluate($auction);
+        $highestValue = $this->auctioneer->getHighestValue();
 
         //assert - then
         self::assertEquals(2500, $highestValue);
@@ -34,10 +39,8 @@ class EvaluatorTest extends TestCase
      */
     public function testEvaluatorShouldFindTheLowestValueOfBids(Auction $auction)
     {
-        $auctioneer = new Evaluator();
-
-        $auctioneer->evaluate($auction);
-        $lowestValue = $auctioneer->getLowestValue();
+        $this->auctioneer->evaluate($auction);
+        $lowestValue = $this->auctioneer->getLowestValue();
 
         self::assertEquals(1300, $lowestValue);
     }
@@ -49,9 +52,8 @@ class EvaluatorTest extends TestCase
      */
     public function testEvaluatorShouldFindTheThreeHighestValues(Auction $auction)
     {
-        $auctioneer = new Evaluator();
-        $auctioneer->evaluate($auction);
-        $highestBids = $auctioneer->getHighestBids();
+        $this->auctioneer->evaluate($auction);
+        $highestBids = $this->auctioneer->getHighestBids();
 
         self::assertCount(3, $highestBids);
         self::assertEquals(2500, $highestBids[0]->getValue());
@@ -74,7 +76,7 @@ class EvaluatorTest extends TestCase
         $auction->receiveBid(new Bid($maria, 2500));
 
         return [
-            [$auction]
+            "ascending order" => [$auction]
         ];
     }
 
@@ -93,7 +95,7 @@ class EvaluatorTest extends TestCase
         $auction->receiveBid(new Bid($rogerio, 1300));
 
         return [
-            [$auction]
+            "descending order" => [$auction]
         ];
     }
 
@@ -112,7 +114,7 @@ class EvaluatorTest extends TestCase
         $auction->receiveBid(new Bid($rogerio, 1300));
 
         return [
-            [$auction]
+            "random order" => [$auction]
         ];
     }
 }
