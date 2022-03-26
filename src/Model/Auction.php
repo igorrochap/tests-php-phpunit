@@ -19,12 +19,9 @@ class Auction
         if(!empty($this->bids) && $this->lastBidIsFromTheSameUser($bid)) {
             return;
         }
-
-        $totalBidsOfTheSameUser = $this->quantityOfBidsFromTheSameUser($bid->getUser());
-        if($totalBidsOfTheSameUser >= 5) {
+        if($this->quantityOfBidsFromTheSameUser($bid->getUser()) >= 5) {
             return;
         }
-
         $this->bids[] = $bid;
     }
 
