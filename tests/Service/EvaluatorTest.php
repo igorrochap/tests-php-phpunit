@@ -61,6 +61,20 @@ class EvaluatorTest extends TestCase
         self::assertEquals(1700, $highestBids[2]->getValue());
     }
 
+    public function testFinalizedAuctionShouldNotBeEvaluated()
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage('Auction alredy finalized');
+
+        $auction = new Auction('Fiat 147 0Km');
+        $user = new User('User');
+
+        $auction->receiveBid(new Bid($user, 2000));
+        $auction->finish();
+
+        $this->auctioneer->evaluate($auction);
+    }
+
     public function ascendingOrderAuction(): array
     {
         $auction = new Auction('Fiat 147 0km');
@@ -78,6 +92,14 @@ class EvaluatorTest extends TestCase
         return [
             "ascending order" => [$auction]
         ];
+    }
+
+    public function testShouldNotEvaluateAnEmptyAuction()
+    {
+        $this->expectException(\DomainException::class);
+        $this->expectExceptionMessage("Isn't possible to evaluate an empty auction");
+        $auction = new Auction('Blue Fusca');
+        $this->auctioneer->evaluate($auction);
     }
 
     public function descendingOrderAuction(): array

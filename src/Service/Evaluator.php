@@ -13,6 +13,12 @@ class Evaluator
 
     public function evaluate(Auction $auction): void
     {
+        if($auction->isFinalized()) {
+            throw new \DomainException("Auction alredy finalized");
+        }
+        if(empty($auction->getBids())) {
+            throw new \DomainException("Isn't possible to evaluate an empty auction");
+        }
         $bids = $auction->getBids();
         usort($bids, function (Bid $bid1, Bid $bid2) {
             return $bid2->getValue() - $bid1->getValue();
